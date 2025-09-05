@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Random Coffee ☕</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            padding: 28px;
+            background: #3199d1;
+            color: #222;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #e63010;
+        }
+
+        #btnFetch {
+            background-color: lightgreen;
+        }
+
+        button {
+            padding: 10px 14px;
+            font-size: 16px;
+            cursor: pointer
+        }
+
+        img {
+            display: block;
+            margin-top: 16px;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .meta {
+            margin-top: 8px;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid #ddd;
+            border-top-color: #333;
+            border-radius: 50%;
+            animation: spin .9s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error {
+            color: crimson;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Random Coffee ☕</h1>
+        <p>API: <code>https://coffee.alexflipnote.dev/random</code></p>
+
+        <div class="controls">
+            <button id="btnFetch">Get Coffee</button>
+            <button id="btnOpen" disabled>Open Image</button>
+            <div id="loader" style="display:none" class="loader" aria-hidden="true"></div>
+        </div>
+
+        <div class="meta" id="status">Click "Get Coffee" to fetch a random coffee image.</div>
+        <img id="coffeeImg" alt="Coffee image" style="display:none">
+        <div id="err" class="error" style="display:none"></div>
+    </div>
+
+    <script>
+        const API = 'https://coffee.alexflipnote.dev/random';
+        const btn = document.getElementById('btnFetch');
+        const btnOpen = document.getElementById('btnOpen');
+        const loader = document.getElementById('loader');
+        const status = document.getElementById('status');
+        const img = document.getElementById('coffeeImg');
+        const errDiv = document.getElementById('err');
+
+        async function fetchCoffee() {
+            errDiv.style.display = 'none';
+            loader.style.display = 'inline-block';
+            btn.disabled = true;
+            btnOpen.disabled = true;
+            status.textContent = 'Fetching coffee...';
+            try {
+
+                img.src = API + '?cache=' + Date.now();
+                img.style.display = 'block';
+                status.textContent = 'Enjoy your coffee!';
+                btnOpen.disabled = false;
+                btnOpen.onclick = () => window.open(img.src, '_blank');
+            } catch (e) {
+                console.error(e);
+                errDiv.style.display = 'block';
+                errDiv.textContent = 'Failed to fetch image. ' + (e.message || '');
+                status.textContent = 'Error fetching coffee.';
+            } finally {
+                loader.style.display = 'none';
+                btn.disabled = false;
+            }
+        }
+
+        btn.addEventListener('click', fetchCoffee);
+    </script>
+</body>
+
+</html>

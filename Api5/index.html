@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Minecraft Skin Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    img {
+      border-radius: 8px;
+      margin-top: 10px;
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+    }
+
+    input,
+    button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Minecraft Skin Viewer</h1>
+    <input type="text" id="uuidInput" placeholder="Enter Minecraft UUID" />
+    <button onclick="fetchSkin()">Fetch Skin</button>
+    <div id="avatarContainer">
+      <h2>Avatar</h2>
+      <img id="avatar" src="" alt="Player Avatar" />
+    </div>
+    <div id="skinContainer">
+      <h2>Skin</h2>
+      <img id="skin" src="" alt="Player Skin" />
+    </div>
+    <div id="error" class="error"></div>
+  </div>
+
+  <script>
+    async function fetchSkin() {
+      const uuid = document.getElementById('uuidInput').value.trim();
+      if (!uuid) {
+        document.getElementById('error').textContent = 'Please enter a valid UUID.';
+        return;
+      }
+
+      const avatarUrl = `https://crafatar.com/avatars/${uuid}?size=100`;
+      const skinUrl = `https://crafatar.com/skins/${uuid}`;
+
+      try {
+
+        const avatarResponse = await fetch(avatarUrl);
+        if (!avatarResponse.ok) throw new Error('Avatar not found');
+
+
+        const skinResponse = await fetch(skinUrl);
+        if (!skinResponse.ok) throw new Error('Skin not found');
+
+
+        document.getElementById('avatar').src = avatarUrl;
+        document.getElementById('skin').src = skinUrl;
+        document.getElementById('error').textContent = '';
+      } catch (error) {
+        document.getElementById('error').textContent = error.message;
+      }
+    }
+  </script>
+
+</body>
+
+</html>

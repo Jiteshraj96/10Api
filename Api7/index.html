@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="mr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PlayerDB</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f4f4f9;
+            text-align: center;
+        }
+
+        input,
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .profile {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: left;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+        }
+
+        .error {
+            color: crimson;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Find the PlayerDB</h1>
+    <input type="text" id="username" placeholder="Minecraft, Steam, Xbox" />
+    <button onclick="fetchProfile()">get Info</button>
+
+    <div id="profile" class="profile"></div>
+    <div id="error" class="error"></div>
+
+    <script>
+        async function fetchProfile() {
+            const username = document.getElementById('username').value.trim();
+            if (!username) {
+                document.getElementById('error').textContent = 'Please Enter the Id.';
+                return;
+            }
+
+            const platform = username.includes(":") ? "xbox" : username.includes("STEAM_") ? "steam" : "minecraft";
+            const url = `https://playerdb.co/api/player/${platform}/${username}`;
+
+            try {
+                const response = await fetch(url, { headers: { 'User-Agent': 'my-playerdb-app/1.0' } });
+                const data = await response.json();
+
+                if (data.success && data.data && data.data.player) {
+                    const player = data.data.player;
+                    document.getElementById('profile').innerHTML = `
+        <img src="${player.avatar}" alt="${player.username}" />
+        <h2>${player.username}</h2>
+        <p><strong>Id:</strong> ${player.id}</p>
+        <p><strong>Platform:</strong> Minecraft</p>
+      `;
+                    document.getElementById('error').textContent = '';
+                } else {
+                    document.getElementById('profile').innerHTML = '';
+                    document.getElementById('error').textContent = 'Not getting players info.';
+                }
+            } catch (error) {
+                document.getElementById('profile').innerHTML = '';
+                document.getElementById('error').textContent = 'data featich error..!.';
+                console.error(error);
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>

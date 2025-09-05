@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="mr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Scryfall card info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f4f4f9;
+            text-align: center;
+        }
+
+        input,
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .profile {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: left;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+        }
+
+        .error {
+            color: crimson;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Scryfall getting card info</h1>
+    <input type="text" id="cardName" placeholder="Enter the card name" />
+    <button onclick="fetchCardInfo()">Getting info</button>
+
+    <div id="cardInfo" class="profile"></div>
+    <div id="error" class="error"></div>
+
+    <script>
+        async function fetchCardInfo() {
+            const cardName = document.getElementById('cardName').value.trim();
+            if (!cardName) {
+                document.getElementById('error').textContent = 'Enter the card name';
+                return;
+            }
+
+            const url = `https://api.scryfall.com/cards/named?exact=${encodeURIComponent(cardName)}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.object === 'card') {
+                    document.getElementById('cardInfo').innerHTML = `
+            <img src="${data.image_uris.normal}" alt="${data.name}" />
+            <h2>${data.name}</h2>
+            <p><strong>Type:</strong> ${data.type_line}</p>
+            <p><strong>color:</strong> ${data.colors.join(', ')}</p>
+            <p><strong>units:</strong> $${data.prices.usd || '–'}</p>
+          `;
+                    document.getElementById('error').textContent = '';
+                } else {
+                    document.getElementById('cardInfo').innerHTML = '';
+                    document.getElementById('error').textContent = 'Not getting cards info';
+                }
+            } catch (error) {
+                document.getElementById('cardInfo').innerHTML = '';
+                document.getElementById('error').textContent = 'data featich error..!';
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+<!-- 
+Lightning Bolt
+
+Black Lotus
+
+Counterspell
+
+Goblin Guide
+
+Serra Angel -->

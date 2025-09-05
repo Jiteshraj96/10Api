@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="mr-IN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Dog Image</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f2f2f2;
+        }
+
+        #dogImage {
+            max-width: 500px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Random Dog Image</h1>
+    <button onclick="fetchDog()">Get Dog Image</button>
+    <div>
+        <img id="dogImage" src="" alt="Dog will appear here">
+    </div>
+
+    <script>
+        function fetchDog() {
+            const url = "https://place.dog/200/300";
+
+            document.getElementById("dogImage").src = url;
+        }
+    </script>
+
+</body>
+
+</html>

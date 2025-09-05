@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chess.com Player Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: auto;
+            background: white;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        input,
+        button {
+            padding: 8px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 8px;
+        }
+
+        .profile {
+            margin-top: 16px;
+        }
+
+        .error {
+            color: crimson;
+            margin-top: 12px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Chess.com Player Info</h2>
+        <input id="username" placeholder="Enter Chess.com username" />
+        <button id="btnFetch">Fetch Profile</button>
+
+        <div id="profile" class="profile"></div>
+        <div id="error" class="error"></div>
+    </div>
+
+    <script>
+        const btn = document.getElementById('btnFetch');
+        const input = document.getElementById('username');
+        const profileDiv = document.getElementById('profile');
+        const errorDiv = document.getElementById('error');
+
+        async function fetchProfile() {
+            errorDiv.textContent = '';
+            profileDiv.innerHTML = 'Loading…';
+            const user = input.value.trim().toLowerCase();
+
+            if (!user) {
+                errorDiv.textContent = 'Username is required';
+                profileDiv.innerHTML = '';
+                return;
+            }
+
+            const url = `https://api.chess.com/pub/player/${user}`;
+
+            try {
+                const res = await fetch(url, {
+                    headers: {
+                        'User-Agent': 'my-chess-app/1.0 (contact: example@domain.com)'
+                    }
+                });
+                if (res.status === 404) throw new Error('User not found');
+                if (!res.ok) throw new Error('Network error: ' + res.status);
+                const data = await res.json();
+                profileDiv.innerHTML = `
+          <p><span class="label">Username:</span> ${data.username || '–'}</p>
+          <p><span class="label">Name:</span> ${data.name || '–'}</p>
+          <p><span class="label">Country:</span> ${data.country || '–'}</p>
+          <p><span class="label">Followers:</span> ${data.followers ?? '–'}</p>
+          <p><span class="label">Joined:</span> ${data.joined ? new Date(data.joined * 1000).toLocaleDateString() : '–'}</p>
+        `;
+            } catch (e) {
+                errorDiv.textContent = e.message;
+                profileDiv.innerHTML = '';
+                console.error(e);
+            }
+        }
+
+        btn.addEventListener('click', fetchProfile);
+    </script>
+</body>
+
+</html>

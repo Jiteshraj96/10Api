@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="mr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pokémon Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f4f4f9;
+            text-align: center;
+        }
+
+        input,
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .pokemon {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: left;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+        }
+
+        .error {
+            color: crimson;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Search here Pokémon</h1>
+    <input type="text" id="pokemonName" placeholder="Enter Pokémon name " />
+    <button onclick="fetchPokemonData()">Get Info</button>
+
+    <div id="pokemonInfo" class="pokemon">poc</div>
+    <div id="error" class="error"></div>
+
+    <script>
+        async function fetchPokemonData() {
+            const name = document.getElementById('pokemonName').value.toLowerCase().trim();
+            if (!name) {
+                document.getElementById('error').textContent = 'please Enter Pokémon name .';
+                return;
+            }
+
+            const url = `https://pokeapi.co/api/v2/pokemon/${name}`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Pokémon not found');
+                const data = await response.json();
+
+                const pokemonDiv = document.getElementById('pokemonInfo');
+                pokemonDiv.innerHTML = `
+          <img src="${data.sprites.front_default}" alt="${data.name}" />
+          <h2>${data.name.charAt(0).toUpperCase() + data.name.slice(1)}</h2>
+          <p><strong>Type:</strong> ${data.types.map(type => type.type.name).join(', ')}</p>
+          <p><strong>Capacity:</strong> ${data.abilities.map(ability => ability.ability.name).join(', ')}</p>
+          <p><strong>Id:</strong> #${data.id}</p>
+        `;
+                document.getElementById('error').textContent = '';
+            } catch (error) {
+                document.getElementById('error').textContent = error.message;
+                document.getElementById('pokemonInfo').innerHTML = '';
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+
+<!-- Bulbasaur
+
+Charmander
+
+Squirtle
+
+Jigglypuff
+
+Meowth
+
+Psyduck
+
+Snorlax
+
+Eevee
+
+Mewtwo -->

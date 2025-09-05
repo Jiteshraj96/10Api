@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Dog CEO </title>
+</head>
+
+<body>
+    <label>
+        Breed:
+        <select id="breed"></select>
+    </label>
+    <button id="show">Show Image</button>
+
+    <div>
+        <img id="img" alt="dog" style="max-width:600px;display:block;margin-top:12px;">
+    </div>
+
+    <script>
+
+        async function loadBreeds() {
+            const res = await fetch('https://dog.ceo/api/breeds/list/all');
+            const data = await res.json();
+            const select = document.getElementById('breed');
+
+
+            for (const [breed, subs] of Object.entries(data.message)) {
+                if (subs.length === 0) {
+                    const opt = document.createElement('option');
+                    opt.value = breed;
+                    opt.textContent = breed;
+                    select.appendChild(opt);
+                } else {
+                    subs.forEach(sb => {
+                        const opt = document.createElement('option');
+                        opt.value = `${breed}/${sb}`;
+                        opt.textContent = `${breed} - ${sb}`;
+                        select.appendChild(opt);
+                    });
+                }
+            }
+        }
+
+
+        async function showBreedImage() {
+            const breedPath = document.getElementById('breed').value;
+            const url = `https://dog.ceo/api/breed/${breedPath}/images/random`;
+            const res = await fetch(url);
+            const data = await res.json();
+            document.getElementById('img').src = data.message;
+        }
+
+        document.getElementById('show').addEventListener('click', showBreedImage);
+        loadBreeds();
+    </script>
+</body>
+
+</html>
